@@ -34,7 +34,7 @@ def main():
     Player.containers = (drawable, updateable)  # type: ignore
     Asteroid.containers = (asteroids, updateable, drawable)  # type: ignore
     AsteroidField.containers = (updateable,)  # type: ignore
-    Shot.containers = (shots, updateable, drawable)
+    Shot.containers = (shots, updateable, drawable)  # type: ignore
 
     # instanciate player
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)

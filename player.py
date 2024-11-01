@@ -1,8 +1,14 @@
 import pygame
 
 from circleshape import CircleShape
-from constants import PLAYER_RADIUS, PLAYER_SPEED, PLAYER_TURN_SPEED, SHOT_SPEED
 from shot import Shot
+from constants import (
+    PLAYER_RADIUS,
+    PLAYER_SPEED,
+    PLAYER_TURN_SPEED,
+    SHOT_SPEED,
+    SHOT_COOLDOWN,
+)
 
 
 class Player(CircleShape):
@@ -15,6 +21,7 @@ class Player(CircleShape):
         super().__init__(x, y, radius=PLAYER_RADIUS)
 
         self.rotation = 0
+        self.shot_cooldown = 0
 
     def draw(self, screen: pygame.Surface):
         """Override the `CircleShape.draw` method to draw the spaceship"""
@@ -53,6 +60,11 @@ class Player(CircleShape):
         Note that the update has nothing to do with the *drawing* of the
         entity. This happens *after* the update is done.
         """
+
+        # decrease shot cooldown timer
+        # if this is > 0, player cannot shoot
+        self.shot_cooldown -= dt
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
             self.rotate(dt)
@@ -76,6 +88,9 @@ class Player(CircleShape):
 
     def shoot(self):
         """Spawn a new shot"""
+        if self.shot_cooldown > 0:
+            return
         shot = Shot(x=self.position.x, y=self.position.y)
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         shot.velocity = forward * SHOT_SPEED
+        self.shot_cooldown = SHOT_COOLDOWN
