@@ -4,6 +4,7 @@ from constants import *
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
 
 
 def main():
@@ -27,11 +28,13 @@ def main():
     drawable = pygame.sprite.Group()
     updateable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     # NOTE: extremely unhappy with this, see my notes in `circleshape.py`
     Player.containers = (drawable, updateable)  # type: ignore
     Asteroid.containers = (asteroids, updateable, drawable)  # type: ignore
-    AsteroidField.containers = updateable  # type: ignore
+    AsteroidField.containers = (updateable,)  # type: ignore
+    Shot.containers = (shots, updateable, drawable)
 
     # instanciate player
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
