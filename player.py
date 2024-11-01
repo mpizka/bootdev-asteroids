@@ -33,7 +33,9 @@ class Player(CircleShape):
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
 
         # pygame Vector classes can be used to determine points very easily
-        a = self.position + forward * self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
+        # NOTE: pyright doesn't detect the operator validity correctly here
+        #       since pygame doesn't use a lot of type hints
+        a = self.position + forward * self.radius  # type: ignore
+        b = self.position - forward * self.radius - right  # type: ignore
+        c = self.position - forward * self.radius + right  # type: ignore
         return [a, b, c]
