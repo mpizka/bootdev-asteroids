@@ -1,6 +1,7 @@
 import pygame
 
 from constants import *
+from player import Player
 
 
 def main():
@@ -20,6 +21,9 @@ def main():
     # delta time
     dt = 0
 
+    # instanciate player
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
     # game loop
     while 1:
 
@@ -33,6 +37,9 @@ def main():
         # The color can be a pygame color or an RGB sequence
         # https://www.pygame.org/docs/ref/surface.html#pygame.Surface.fill
         screen.fill(pygame.Color(0, 0, 0))
+
+        # draw the player spaceship
+        player.draw(screen=screen)
 
         # Draw the surface to the actual display
         # https://www.pygame.org/docs/ref/display.html#pygame.display.flip
