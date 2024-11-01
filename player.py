@@ -1,7 +1,7 @@
 import pygame
 
 from circleshape import CircleShape
-from constants import PLAYER_RADIUS
+from constants import PLAYER_RADIUS, PLAYER_TURN_SPEED
 
 
 class Player(CircleShape):
@@ -39,3 +39,14 @@ class Player(CircleShape):
         b = self.position - forward * self.radius - right  # type: ignore
         c = self.position - forward * self.radius + right  # type: ignore
         return [a, b, c]
+
+    def update(self, dt: float):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT]:
+            self.rotate(dt)
+        if keys[pygame.K_LEFT]:
+            self.rotate(-dt)
+
+    def rotate(self, dt: float):
+        """Update spaceship rotation"""
+        self.rotation += dt * PLAYER_TURN_SPEED

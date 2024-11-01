@@ -39,6 +39,7 @@ def main():
         screen.fill(pygame.Color(0, 0, 0))
 
         # draw the player spaceship
+        player.update(dt)
         player.draw(screen=screen)
 
         # Draw the surface to the actual display
