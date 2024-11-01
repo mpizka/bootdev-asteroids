@@ -15,6 +15,11 @@ def main():
     # https://www.pygame.org/docs/ref/display.html#pygame.display.set_mode
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+    # A `pygame.time.Clock` is a time-tracking object
+    clock = pygame.time.Clock()
+    # delta time
+    dt = 0
+
     # game loop
     while 1:
 
@@ -32,6 +37,13 @@ def main():
         # Draw the surface to the actual display
         # https://www.pygame.org/docs/ref/display.html#pygame.display.flip
         pygame.display.flip()
+
+        # limit the framerate to a maximum of 60FPS
+        # this also returns the delta-time that has passed since the last
+        # time Clock.tick() has been called
+        # The argument to `tick` is the intended framerate in FPS
+        dt_milliseconds = clock.tick(60)
+        dt = dt_milliseconds / 1000
 
 
 if __name__ == "__main__":
