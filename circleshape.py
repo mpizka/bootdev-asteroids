@@ -8,6 +8,17 @@ class CircleShape(pygame.sprite.Sprite):
     """
 
     def __init__(self, x, y, radius):
+
+        # NOTE: This is a (kinda non-obvious) way of adding stuff to containers
+        # automatically. The `Sprite()` class constructor can take one or more
+        # containers as *args, adding the sprite in question to these
+        # containers. I don't like this to be honest; It's just a layer of
+        # added magic and indirection, essentially a cheap form of dependency
+        # injection.
+        #
+        # A much better way in my opinion, is to either add sprites to their
+        # groups using Sprite.add(*groups) or pass a *groups argument to the
+        # subclasses constructor.
         if hasattr(self, "containers"):
             super().__init__(self.containers)  # type: ignore
         else:

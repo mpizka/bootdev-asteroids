@@ -2,6 +2,8 @@ import pygame
 
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 
 def main():
@@ -21,8 +23,19 @@ def main():
     # delta time
     dt = 0
 
+    # groups for updating and drawing
+    drawable = pygame.sprite.Group()
+    updateable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+
+    # NOTE: extremely unhappy with this, see my notes in `circleshape.py`
+    Player.containers = (drawable, updateable)  # type: ignore
+    Asteroid.containers = (asteroids, updateable, drawable)  # type: ignore
+    AsteroidField.containers = updateable  # type: ignore
+
     # instanciate player
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    asteroid_field = AsteroidField()
 
     # game loop
     while 1:
@@ -38,9 +51,16 @@ def main():
         # https://www.pygame.org/docs/ref/surface.html#pygame.Surface.fill
         screen.fill(pygame.Color(0, 0, 0))
 
-        # draw the player spaceship
-        player.update(dt)
-        player.draw(screen=screen)
+        # update and draw
+        # NOTE: This is not how you would usually do this in pygame. Normally
+        # you call the groups update and draw methods. however, in the case of
+        # this project, our `draw` methods work slightly different from drawing in
+        # most pygame games:
+        # https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Group.draw
+        for u in updateable:
+            u.update(dt)
+        for d in drawable:
+            d.draw(screen)
 
         # Draw the surface to the actual display
         # https://www.pygame.org/docs/ref/display.html#pygame.display.flip
