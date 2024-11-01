@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pygame
 
 
@@ -44,3 +45,9 @@ class CircleShape(pygame.sprite.Sprite):
         Needs to be overridden by subclasses.
         """
         pass
+
+    def collides_with(self, other: CircleShape) -> bool:
+        sp = self.position
+        op = other.position
+        distance = sp.distance_to(op)
+        return distance <= self.radius + other.radius

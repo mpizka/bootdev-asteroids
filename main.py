@@ -59,6 +59,10 @@ def main():
         # https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Group.draw
         for u in updateable:
             u.update(dt)
+        for a in asteroids:
+            if a.collides_with(player):
+                print("Game over!")
+                return
         for d in drawable:
             d.draw(screen)
 
