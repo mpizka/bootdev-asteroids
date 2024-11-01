@@ -30,17 +30,17 @@ class CircleShape(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
 
-        def draw(self, screen):
-            """Every object should have a "draw" method that draws itself onto
-            a screen
+    def draw(self, screen):
+        """Every object should have a "draw" method that draws itself onto
+        a screen
 
-            Needs to be overridden by subclasses.
-            """
-            pass
+        Needs to be overridden by subclasses.
+        """
+        pass
 
-        def update(self, dt):
-            """Update the sprite by the delta-time
+    def update(self, dt):
+        """Update the sprite by the delta-time
 
-            Needs to be overridden by subclasses.
-            """
-            pass
+        Needs to be overridden by subclasses.
+        """
+        pass
