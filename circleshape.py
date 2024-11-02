@@ -8,7 +8,7 @@ class CircleShape(pygame.sprite.Sprite):
     Our subclass of Sprite stores position, velocity and radius.
     """
 
-    def __init__(self, x, y, radius):
+    def __init__(self, position, radius):
 
         # NOTE: This is a (kinda non-obvious) way of adding stuff to containers
         # automatically. The `Sprite()` class constructor can take one or more
@@ -25,9 +25,10 @@ class CircleShape(pygame.sprite.Sprite):
         else:
             super().__init__()
 
-        # This is actually a convenience for pygame.math.Vector2
-        # It's just a 2D vector
-        self.position = pygame.Vector2(x, y)
+        # The reason we are re-building a vector here: because otherwise
+        # multiple objects would suddenly SHARE position-vectors with all sorts
+        # of hillarious consequences.
+        self.position = pygame.Vector2(position.x, position.y)
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
 

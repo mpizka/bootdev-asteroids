@@ -9,8 +9,8 @@ from constants import *
 
 class Asteroid(CircleShape):
 
-    def __init__(self, x, y, radius):
-        super().__init__(x, y, radius=radius)
+    def __init__(self, position, radius):
+        super().__init__(position, radius)
 
     def draw(self, screen: pygame.Surface):
         """Asteroids are just drawn as circles"""
@@ -43,10 +43,8 @@ class Asteroid(CircleShape):
         v1 = self.velocity.rotate(split_angle) * 1.2
         v2 = self.velocity.rotate(-split_angle) * 1.2
         radius = self.radius - ASTEROID_MIN_RADIUS
-        x = self.position.x
-        y = self.position.y
-        a1 = Asteroid(x, y, radius)
-        a2 = Asteroid(x, y, radius)
+        a1 = Asteroid(self.position, radius)
+        a2 = Asteroid(self.position, radius)
         a1.velocity = v1
         a2.velocity = v2
 
@@ -84,8 +82,7 @@ class Asteroid(CircleShape):
                 )
 
         asteroid = Asteroid(
-            position.x,
-            position.y,
+            position,
             ASTEROID_MIN_RADIUS * random.randint(1, ASTEROID_KINDS),
         )
         asteroid.velocity = velocity

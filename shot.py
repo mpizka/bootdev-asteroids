@@ -6,8 +6,8 @@ from constants import SHOT_RADIUS, SHOT_SPEED
 
 class Shot(CircleShape):
 
-    def __init__(self, x, y):
-        super().__init__(x, y, radius=SHOT_RADIUS)
+    def __init__(self, position):
+        super().__init__(position, radius=SHOT_RADIUS)
 
     def draw(self, screen: pygame.Surface):
         """Shots are just drawn as circles"""

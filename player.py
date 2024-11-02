@@ -17,8 +17,8 @@ class Player(CircleShape):
     It's a circular sprite, but also includes a rotational value.
     """
 
-    def __init__(self, x, y):
-        super().__init__(x, y, radius=PLAYER_RADIUS)
+    def __init__(self, position):
+        super().__init__(position, radius=PLAYER_RADIUS)
 
         self.rotation = 0
         self.shot_cooldown = 0
@@ -90,7 +90,7 @@ class Player(CircleShape):
         """Spawn a new shot"""
         if self.shot_cooldown > 0:
             return
-        shot = Shot(x=self.position.x, y=self.position.y)
+        shot = Shot(self.position)
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         shot.velocity = forward * SHOT_SPEED
         self.shot_cooldown = SHOT_COOLDOWN

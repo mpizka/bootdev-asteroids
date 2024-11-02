@@ -38,7 +38,7 @@ def main():
     asteroid_cooldown = 0
 
     # instanciate player
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    player = Player(pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
     # game loop
     while 1:
