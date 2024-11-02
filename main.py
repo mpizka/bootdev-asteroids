@@ -4,6 +4,7 @@ from constants import *
 from player import Player
 from asteroid import Asteroid
 from shot import Shot
+from score import draw_scoreboard
 
 
 def main():
@@ -36,6 +37,10 @@ def main():
 
     # asteroid spawn cooldown
     asteroid_cooldown = 0
+
+    # score tracker
+    score_font = pygame.font.Font(size=12)  # type: ignore
+    score = 0
 
     # instanciate player
     player = Player(pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
@@ -79,8 +84,8 @@ def main():
             Asteroid.spawn()
             asteroid_cooldown = ASTEROID_SPAWN_COOLDOWN
 
+        # run updates and remove out-of-screen objects
         for u in updateable:
-            # remove out-of-screen objects
             if (
                 u.position.x > SCREEN_WIDTH
                 or u.position.x < 0
@@ -88,23 +93,33 @@ def main():
                 or u.position.y < 0
             ):
                 if u is player:
-                    print("Game over!")
+                    print(f"Game over! {score=}")
                     return
                 u.kill()
                 continue
             u.update(dt)
+
+        # determine if asteroids hit player
         for a in asteroids:
             if a.collides_with(player):
-                print("Game over!")
+                print(f"Game over! {score=}")
                 return
+
+        # determine if shots hit asteroids
         for a in asteroids:
             for s in shots:
                 if a.collides_with(s):
                     a.split()
                     s.kill()
+                    score += 1
                     break
+
+        # draw sprites
         for d in drawable:
             d.draw(screen)
+
+        # draw scoreboard
+        draw_scoreboard(score, screen)
 
         # Draw the surface to the actual display
         # https://www.pygame.org/docs/ref/display.html#pygame.display.flip

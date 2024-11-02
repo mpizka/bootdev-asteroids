@@ -5,7 +5,8 @@ Asteroids game from the boot.dev course [*"Build Asteroids using Python and Pyga
 - Run `python main.py` to play
 - <kbd>Up</kbd> <kbd>Left</kbd> <kbd>Right</kbd> control the ship
 - <kbd>Space</kbd> shoots
-- When an asteroid hits the ship, the game ends
+- <kbd>Q</kbd> or <kbd>Esc</kbd> exits the game
+- When an asteroid hits the ship, or the ship leaves the screen, the game ends
 
 
 ## Versions
@@ -31,7 +32,7 @@ Changes planned or already implemented
 ### New game features
 
 - [x] Acceleration
-- [ ] Score Display
+- [x] Score Display
 - [ ] Wrap-Around for ship & asteroids
 - [ ] Game-Over Screen
 - [ ] Background image
