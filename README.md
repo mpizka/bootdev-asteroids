@@ -8,7 +8,7 @@ Asteroids game from the boot.dev course [*"Build Asteroids using Python and Pyga
 - When an asteroid hits the ship, the game ends
 
 
-# Versions
+## Versions
 
 Access the desired version by checking out `main` at the indicated tag.
 
@@ -16,13 +16,21 @@ Access the desired version by checking out `main` at the indicated tag.
 - `v1.1.0` Code and technical improvements
 
 
-# Roadmap
+## Roadmap
+
+Changes planned or already implemented
+
+### Technical improvements
 
 - [x] Exit with <kbd>Q</kbd>
 - [x] Cleaning up group-assignment logic
 - [x] Replace the asteroid-generation logic
 - [x] Track and destroy out-of-screen objects
-- [ ] Acceleration
+
+
+### New game features
+
+- [x] Acceleration
 - [ ] Score Display
 - [ ] Wrap-Around for ship & asteroids
 - [ ] Game-Over Screen

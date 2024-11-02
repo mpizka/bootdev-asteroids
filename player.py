@@ -2,13 +2,7 @@ import pygame
 
 from circleshape import CircleShape
 from shot import Shot
-from constants import (
-    PLAYER_RADIUS,
-    PLAYER_SPEED,
-    PLAYER_TURN_SPEED,
-    SHOT_SPEED,
-    SHOT_COOLDOWN,
-)
+from constants import *
 
 
 class Player(CircleShape):
@@ -71,20 +65,32 @@ class Player(CircleShape):
         if keys[pygame.K_LEFT]:
             self.rotate(-dt)
         if keys[pygame.K_UP]:
-            self.move(dt)
+            self.accelerate(dt)
         if keys[pygame.K_SPACE]:
             self.shoot()
+
+        self.move()
 
     def rotate(self, dt: float):
         """Update spaceship rotation"""
         self.rotation += dt * PLAYER_TURN_SPEED
 
-    def move(self, dt: float):
+    def accelerate(self, dt: float):
+        """Accelerate the spaceship in the current direction"""
+        a = PLAYER_ACCELERATION * dt
+        v = pygame.Vector2(0, 1).rotate(self.rotation) * a
+        self.velocity += v
+        if self.velocity.magnitude() >= PLAYER_MAX_SPEED:
+            self.velocity = (
+                pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_MAX_SPEED
+            )
+
+    def move(self):
         """Move the player spaceship ahead"""
 
         # forward pointing unit-vector
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += forward * PLAYER_SPEED * dt
+        self.position += self.velocity
 
     def shoot(self):
         """Spawn a new shot"""

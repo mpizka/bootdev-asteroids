@@ -91,7 +91,6 @@ def main():
                     print("Game over!")
                     return
                 u.kill()
-                print(f"{u} destroyed")
                 continue
             u.update(dt)
         for a in asteroids:
