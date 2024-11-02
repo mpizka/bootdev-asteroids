@@ -18,8 +18,9 @@ Access the desired version by checking out `main` at the indicated tag.
 # Roadmap
 
 - [x] Exit with <kbd>Q</kbd>
-- [ ] Cleaning up group-assignment logic
+- [x] Cleaning up group-assignment logic
 - [x] Replace the asteroid-generation logic
+- [ ] Track and destroy out-of-screen objects
 - [ ] Acceleration
 - [ ] Score Display
 - [ ] Wrap-Around for ship & asteroids
