@@ -80,6 +80,19 @@ def main():
             asteroid_cooldown = ASTEROID_SPAWN_COOLDOWN
 
         for u in updateable:
+            # remove out-of-screen objects
+            if (
+                u.position.x > SCREEN_WIDTH
+                or u.position.x < 0
+                or u.position.y > SCREEN_HEIGHT
+                or u.position.y < 0
+            ):
+                if u is player:
+                    print("Game over!")
+                    return
+                u.kill()
+                print(f"{u} destroyed")
+                continue
             u.update(dt)
         for a in asteroids:
             if a.collides_with(player):

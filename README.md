@@ -13,6 +13,7 @@ Asteroids game from the boot.dev course [*"Build Asteroids using Python and Pyga
 Access the desired version by checking out `main` at the indicated tag.
 
 - `v1.0.0` Base version after the Course goal was reached
+- `v1.1.0` Code and technical improvements
 
 
 # Roadmap
@@ -20,7 +21,7 @@ Access the desired version by checking out `main` at the indicated tag.
 - [x] Exit with <kbd>Q</kbd>
 - [x] Cleaning up group-assignment logic
 - [x] Replace the asteroid-generation logic
-- [ ] Track and destroy out-of-screen objects
+- [x] Track and destroy out-of-screen objects
 - [ ] Acceleration
 - [ ] Score Display
 - [ ] Wrap-Around for ship & asteroids
