@@ -19,7 +19,7 @@ Access the desired version by checking out `main` at the indicated tag.
 
 - [x] Exit with <kbd>Q</kbd>
 - [ ] Cleaning up group-assignment logic
-- [ ] Replace the asteroid-generation logic
+- [x] Replace the asteroid-generation logic
 - [ ] Acceleration
 - [ ] Score Display
 - [ ] Wrap-Around for ship & asteroids

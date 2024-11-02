@@ -1,9 +1,10 @@
+from __future__ import annotations
 import random
 
 import pygame
 
 from circleshape import CircleShape
-from constants import ASTEROID_MIN_RADIUS
+from constants import *
 
 
 class Asteroid(CircleShape):
@@ -48,3 +49,43 @@ class Asteroid(CircleShape):
         a2 = Asteroid(x, y, radius)
         a1.velocity = v1
         a2.velocity = v2
+
+    @classmethod
+    def spawn(cls):
+        """Spawn an asteroid
+
+        The asteroid will be spawned randomly at one of the 4 screen edges, and
+        have a velocity away from it. The asteroid will be added to all `*groups`
+        """
+        position_mod = random.uniform(0, 1)
+        speed = random.randint(40, 100)
+        rotation = random.randint(-30, 30)
+        edge = random.choice(("top", "bottom", "left", "right"))
+        match edge:
+            case "top":
+                velocity = pygame.Vector2(0, 1).rotate(rotation) * speed
+                position = pygame.Vector2(
+                    SCREEN_WIDTH * position_mod, ASTEROID_MAX_RADIUS
+                )
+            case "bottom":
+                velocity = pygame.Vector2(0, -1).rotate(rotation) * speed
+                position = pygame.Vector2(
+                    SCREEN_WIDTH * position_mod, SCREEN_HEIGHT - ASTEROID_MAX_RADIUS
+                )
+            case "left":
+                velocity = pygame.Vector2(1, 0).rotate(rotation) * speed
+                position = pygame.Vector2(
+                    ASTEROID_MAX_RADIUS, SCREEN_HEIGHT * position_mod
+                )
+            case "right":
+                velocity = pygame.Vector2(-1, 0).rotate(rotation) * speed
+                position = pygame.Vector2(
+                    SCREEN_WIDTH - ASTEROID_MAX_RADIUS, SCREEN_HEIGHT * position_mod
+                )
+
+        asteroid = Asteroid(
+            position.x,
+            position.y,
+            ASTEROID_MIN_RADIUS * random.randint(1, ASTEROID_KINDS),
+        )
+        asteroid.velocity = velocity

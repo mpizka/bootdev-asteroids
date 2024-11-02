@@ -3,7 +3,6 @@ import pygame
 from constants import *
 from player import Player
 from asteroid import Asteroid
-from asteroidfield import AsteroidField
 from shot import Shot
 
 
@@ -33,12 +32,13 @@ def main():
     # NOTE: extremely unhappy with this, see my notes in `circleshape.py`
     Player.containers = (drawable, updateable)  # type: ignore
     Asteroid.containers = (asteroids, updateable, drawable)  # type: ignore
-    AsteroidField.containers = (updateable,)  # type: ignore
     Shot.containers = (shots, updateable, drawable)  # type: ignore
+
+    # asteroid spawn cooldown
+    asteroid_cooldown = 0
 
     # instanciate player
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    asteroid_field = AsteroidField()
 
     # game loop
     while 1:
@@ -72,6 +72,13 @@ def main():
         # this project, our `draw` methods work slightly different from drawing in
         # most pygame games:
         # https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Group.draw
+
+        # spawn asteroids
+        asteroid_cooldown -= dt
+        if asteroid_cooldown <= 0:
+            Asteroid.spawn()
+            asteroid_cooldown = ASTEROID_SPAWN_COOLDOWN
+
         for u in updateable:
             u.update(dt)
         for a in asteroids:
