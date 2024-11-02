@@ -35,8 +35,10 @@ Changes planned or already implemented
 - [x] Score Display
 - [ ] Wrap-Around for ship & asteroids
 - [ ] Game-Over Screen
-- [ ] Background image
+- [x] Background image
 - [ ] Restart
+- [ ] Sprites for asteroids and spaceship
+- [ ] Spaceship exhaust while accelerating
 
 
 [course]: https://www.boot.dev/courses/build-asteroids-python

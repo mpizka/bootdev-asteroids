@@ -18,6 +18,8 @@ def main():
     # The surface has to be "flipped" onto the screen to become visible
     # https://www.pygame.org/docs/ref/display.html#pygame.display.set_mode
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    # load background image
+    bkgrd = pygame.image.load("assets/bkgrd.jpg")
 
     # A `pygame.time.Clock` is a time-tracking object
     clock = pygame.time.Clock()
@@ -66,10 +68,7 @@ def main():
             ]:
                 return
 
-        # `fill` draws rectangles of color on a surface
-        # The color can be a pygame color or an RGB sequence
-        # https://www.pygame.org/docs/ref/surface.html#pygame.Surface.fill
-        screen.fill(pygame.Color(0, 0, 0))
+        screen.blit(bkgrd, (0, 0))
 
         # update and draw
         # NOTE: This is not how you would usually do this in pygame. Normally
