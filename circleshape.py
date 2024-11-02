@@ -8,22 +8,15 @@ class CircleShape(pygame.sprite.Sprite):
     Our subclass of Sprite stores position, velocity and radius.
     """
 
-    def __init__(self, position, radius):
+    __groups = []
 
-        # NOTE: This is a (kinda non-obvious) way of adding stuff to containers
-        # automatically. The `Sprite()` class constructor can take one or more
-        # containers as *args, adding the sprite in question to these
-        # containers. I don't like this to be honest; It's just a layer of
-        # added magic and indirection, essentially a cheap form of dependency
-        # injection.
-        #
-        # A much better way in my opinion, is to either add sprites to their
-        # groups using Sprite.add(*groups) or pass a *groups argument to the
-        # subclasses constructor.
-        if hasattr(self, "containers"):
-            super().__init__(self.containers)  # type: ignore
-        else:
-            super().__init__()
+    @classmethod
+    def set_default_groups(cls, *groups):
+        """Set the default `pygame.sprite.Group`s instances of this class belong to"""
+        cls.__groups = groups
+
+    def __init__(self, position, radius):
+        super().__init__(*self.__groups)
 
         # The reason we are re-building a vector here: because otherwise
         # multiple objects would suddenly SHARE position-vectors with all sorts

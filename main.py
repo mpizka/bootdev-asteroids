@@ -29,10 +29,10 @@ def main():
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
 
-    # NOTE: extremely unhappy with this, see my notes in `circleshape.py`
-    Player.containers = (drawable, updateable)  # type: ignore
-    Asteroid.containers = (asteroids, updateable, drawable)  # type: ignore
-    Shot.containers = (shots, updateable, drawable)  # type: ignore
+    # Set default groups for classes
+    Player.set_default_groups(drawable, updateable)
+    Asteroid.set_default_groups(asteroids, updateable, drawable)
+    Shot.set_default_groups(shots, updateable, drawable)
 
     # asteroid spawn cooldown
     asteroid_cooldown = 0
