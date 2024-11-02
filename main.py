@@ -44,9 +44,21 @@ def main():
     while 1:
 
         # get and process events
+        # this needs to happen regularly, as pygame communicates with the underlying
+        # system through an event loop, which has a maximum number of events
+        # it can hold.
         for event in pygame.event.get():
             # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
+                return
+            # we quit the game if the user presses Q or ESC
+            # all keys are implemented as pygame constants
+            # which are listed here:
+            # https://www.pygame.org/docs/ref/key.html
+            if event.type == pygame.KEYDOWN and event.key in [
+                pygame.K_q,
+                pygame.K_ESCAPE,
+            ]:
                 return
 
         # `fill` draws rectangles of color on a surface
