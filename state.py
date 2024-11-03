@@ -121,9 +121,6 @@ class Endless(Loop):
         self.score_font = pygame.font.Font(size=12)  # type: ignore
         self.score = 0
 
-        # instanciate player
-        player = Player(pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
-
     def step(self, dt: float) -> Loop:
         """A single step in this game loop"""
 
@@ -173,9 +170,9 @@ class Endless(Loop):
         for a in self.asteroids:
             for s in self.shots:
                 if a.collides_with(s):
+                    s.kill()
                     a.split()
                     a.explode()
-                    s.kill()
                     self.score += 1
                     break
 
