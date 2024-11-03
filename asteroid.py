@@ -12,15 +12,19 @@ from explosion import Explosion
 
 class Asteroid(CircleShape):
 
-    def __init__(self, position, radius, kind):
+    def __init__(self, position, radius, size, kind=None):
         super().__init__(position, radius)
+        self.size = size
+        if kind is None:
+            kind = random.randint(1, ASTEROID_KINDS)
         self.kind = kind
 
     def draw(self, screen: pygame.Surface):
         """Asteroids are just drawn as circles"""
-        x = self.position.x - self.radius
-        y = self.position.y - self.radius
-        screen.blit(ASSETS[f"asteroid_{self.kind}_1.png"], (x, y))
+        img = ASSETS[f"asteroid_{self.size}_{self.kind}.png"]
+        x = self.position.x - img.get_width() / 2
+        y = self.position.y - img.get_height() / 2
+        screen.blit(img, (x, y))
         if DEBUG_SHOW_HITBOX:
             self.debug_draw_hitbox(screen)
 
@@ -38,16 +42,16 @@ class Asteroid(CircleShape):
         self.kill()
 
         # don't split small asteroids
-        if self.kind == 1:
+        if self.size == 1:
             return
 
-        split_kind = self.kind - 1
+        split_size = self.size - 1
         split_angle = random.uniform(20, 50)
         v1 = self.velocity.rotate(split_angle) * 1.2
         v2 = self.velocity.rotate(-split_angle) * 1.2
-        radius = ASTEROID_MIN_RADIUS * split_kind
-        a1 = Asteroid(self.position, radius, split_kind)
-        a2 = Asteroid(self.position, radius, split_kind)
+        radius = ASTEROID_MIN_RADIUS * split_size
+        a1 = Asteroid(self.position, radius, split_size, self.kind)
+        a2 = Asteroid(self.position, radius, split_size, self.kind)
         a1.velocity = v1
         a2.velocity = v2
 
@@ -61,8 +65,8 @@ class Asteroid(CircleShape):
         The asteroid will be spawned randomly at one of the 4 screen edges, and
         have a velocity away from it. The asteroid will be added to all `*groups`
         """
-        kind = random.randint(1, ASTEROID_KINDS)
-        radius = ASTEROID_MIN_RADIUS * kind
+        size = random.randint(1, ASTEROID_SIZES)
+        radius = ASTEROID_MIN_RADIUS * size
         half_r = radius / 2
         position_mod = random.uniform(0, 1)
         speed = random.randint(40, 100)
@@ -82,5 +86,5 @@ class Asteroid(CircleShape):
                 velocity = Vector2(-1, 0).rotate(rotation) * speed
                 position = Vector2(SCREEN_WIDTH - half_r, SCREEN_HEIGHT * position_mod)
 
-        asteroid = Asteroid(position, radius, kind)
+        asteroid = Asteroid(position, radius, size)
         asteroid.velocity = velocity
