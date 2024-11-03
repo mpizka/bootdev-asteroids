@@ -94,6 +94,39 @@ class Quit(Loop):
         super().__init__(screen, storage)
 
 
+class Pause(Loop):
+    """State to pause the game
+
+    Takes a state as argument which is returned when un-pausing"""
+
+    def __init__(self, screen, storage, previous_state: Loop):
+        super().__init__(screen, storage)
+        self.previous_state = previous_state
+        self.pause_font = pygame.font.Font(size=36)  # type: ignore
+
+    def step(self, dt: float) -> Loop:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                return self.previous_state
+
+        # display -- PAUSE -- text
+        pause_text = self.pause_font.render(
+            "-- GAME PAUSED --",
+            False,
+            SCORE_COLOR,
+        )
+        w_got = pause_text.get_width()
+        h_got = pause_text.get_height()
+        self.screen.blit(
+            source=pause_text,
+            dest=(
+                SCREEN_WIDTH / 2 - w_got / 2,
+                SCREEN_HEIGHT / 2 - h_got / 2,
+            ),
+        )
+        return self
+
+
 class Endless(Loop):
     """Endless game. Asteroids spawn continuously from the edges."""
 
@@ -134,6 +167,8 @@ class Endless(Loop):
                 pygame.K_ESCAPE,
             ]:
                 return Quit(self.screen, storage={})
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                return Pause(self.screen, self.storage, self)
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
