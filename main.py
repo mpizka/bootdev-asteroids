@@ -7,7 +7,7 @@ from asteroid import Asteroid
 from shot import Shot
 from score import draw_scoreboard
 from explosion import Explosion
-from game_loops import *
+import state
 
 
 def main():
@@ -26,15 +26,16 @@ def main():
     # delta time
     dt = 0
 
-    current_state = Endless(screen)
+    # cross-state value dictionary
+    game_vals = {}
+
+    current_state = state.Endless(screen, game_vals)
 
     # game loop
     while 1:
 
-        next_state = current_state.step(dt)
-        if next_state == current_state.state:
-            pass
-        elif next_state == STATE_QUIT:
+        current_state = current_state.step(dt)
+        if isinstance(current_state, state.Quit):
             return
 
         # Draw the surface to the actual display
