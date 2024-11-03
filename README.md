@@ -15,6 +15,8 @@ Access the desired version by checking out `main` at the indicated tag.
 
 - `v1.0.0` Base version after the Course goal was reached
 - `v1.1.0` Code and technical improvements
+- `v1.1.1` Gameplay improvements (score display and aceleration)
+- `v1.2.0` Graphics update
 
 
 ## Roadmap
