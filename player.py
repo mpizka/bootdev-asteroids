@@ -1,5 +1,6 @@
 import pygame
 
+from assets import ASSETS
 from circleshape import CircleShape
 from shot import Shot
 from constants import *
@@ -19,12 +20,21 @@ class Player(CircleShape):
 
     def draw(self, screen: pygame.Surface):
         """Override the `CircleShape.draw` method to draw the spaceship"""
-        pygame.draw.polygon(
-            surface=screen,
-            color="#FFFFFF",
-            points=self.triangle(),
-            width=2,
-        )
+        rot_img = pygame.transform.rotate(ASSETS["ship.png"], -self.rotation)
+        rot_img_rect = rot_img.get_rect()
+        x_offset = rot_img_rect.width / 2
+        y_offset = rot_img_rect.height / 2
+        x = self.position.x - x_offset
+        y = self.position.y - y_offset
+        screen.blit(rot_img, (x, y))
+        if DEBUG_SHOW_HITBOX:
+            pygame.draw.polygon(
+                surface=screen,
+                color="#FF0000",
+                points=self.triangle(),
+                width=1,
+            )
+            self.debug_draw_hitbox(screen)
 
     def triangle(self):
         """Returns the 3 points of a triangle pointing forward Accorind gto `self.rotation`"""
