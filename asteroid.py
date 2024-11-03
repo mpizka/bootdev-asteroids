@@ -4,6 +4,7 @@ import random
 import pygame
 from pygame import Vector2
 
+from assets import ASSETS
 from circleshape import CircleShape
 from constants import *
 
@@ -16,13 +17,11 @@ class Asteroid(CircleShape):
 
     def draw(self, screen: pygame.Surface):
         """Asteroids are just drawn as circles"""
-        pygame.draw.circle(
-            surface=screen,
-            color="#FFFFFF",
-            center=self.position,
-            radius=self.radius,
-            width=2,
-        )
+        x = self.position.x - self.radius
+        y = self.position.y - self.radius
+        screen.blit(ASSETS[f"asteroid_{self.kind}_1.png"], (x, y))
+        if DEBUG_SHOW_HITBOX:
+            self.debug_draw_hitbox(screen)
 
     def update(self, dt: float):
         """Asteroids move by their velicity (which is a Vector2) at each frame"""

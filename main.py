@@ -5,12 +5,16 @@ from player import Player
 from asteroid import Asteroid
 from shot import Shot
 from score import draw_scoreboard
+import assets
 
 
 def main():
     """The main function"""
     # init pygame
     pygame.init()
+
+    # load assets
+    assets.load()
 
     # create GUI window as `screen` object
     # A running pygame application has a single `display` instance.
@@ -19,7 +23,6 @@ def main():
     # https://www.pygame.org/docs/ref/display.html#pygame.display.set_mode
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     # load background image
-    bkgrd = pygame.image.load("assets/bkgrd.jpg")
 
     # A `pygame.time.Clock` is a time-tracking object
     clock = pygame.time.Clock()
@@ -68,7 +71,7 @@ def main():
             ]:
                 return
 
-        screen.blit(bkgrd, (0, 0))
+        screen.blit(assets.ASSETS["bkgrd.jpg"], (0, 0))
 
         # update and draw
         # NOTE: This is not how you would usually do this in pygame. Normally

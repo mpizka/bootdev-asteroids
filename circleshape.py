@@ -25,6 +25,16 @@ class CircleShape(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
 
+    def debug_draw_hitbox(self, screen):
+        """Draws the hitbox on the screen for debug purposes"""
+        pygame.draw.circle(
+            surface=screen,
+            color="#FF0000",
+            center=self.position,
+            radius=self.radius,
+            width=1,
+        )
+
     def draw(self, screen):
         """Every object should have a "draw" method that draws itself onto
         a screen
