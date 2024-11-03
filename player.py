@@ -110,7 +110,7 @@ class Player(CircleShape):
         """Spawn a new shot"""
         if self.shot_cooldown > 0:
             return
-        shot = Shot(self.position)
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        shot = Shot(self.position + forward * self.radius)
         shot.velocity = forward * SHOT_SPEED
         self.shot_cooldown = SHOT_COOLDOWN
