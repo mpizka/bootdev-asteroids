@@ -29,6 +29,7 @@ Changes planned or already implemented
 - [x] Cleaning up group-assignment logic
 - [x] Replace the asteroid-generation logic
 - [x] Track and destroy out-of-screen objects
+- [x] Stateful game loop
 
 
 ### New game features
