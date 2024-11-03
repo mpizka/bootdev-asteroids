@@ -106,6 +106,16 @@ class Pause(Loop):
 
     def step(self, dt: float) -> Loop:
         for event in pygame.event.get():
+            # the `QUIT` event is emitted e.g. by pressing [X] in the window
+            if event.type == pygame.QUIT:
+                return Quit(self.screen, storage={})
+            # we quit the game if the user presses Q or ESC
+            if event.type == pygame.KEYDOWN and event.key in [
+                pygame.K_q,
+                pygame.K_ESCAPE,
+            ]:
+                return Quit(self.screen, storage={})
+            # Unpause the game
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 return self.previous_state
 
