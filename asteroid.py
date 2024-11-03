@@ -2,6 +2,7 @@ from __future__ import annotations
 import random
 
 import pygame
+from pygame import Vector2
 
 from circleshape import CircleShape
 from constants import *
@@ -9,8 +10,9 @@ from constants import *
 
 class Asteroid(CircleShape):
 
-    def __init__(self, position, radius):
+    def __init__(self, position, radius, kind):
         super().__init__(position, radius)
+        self.kind = kind
 
     def draw(self, screen: pygame.Surface):
         """Asteroids are just drawn as circles"""
@@ -35,16 +37,17 @@ class Asteroid(CircleShape):
         # remove the current asteroid
         self.kill()
 
-        # don't split too small asteroids
-        if self.radius <= ASTEROID_MIN_RADIUS:
+        # don't split small asteroids
+        if self.kind == 1:
             return
 
+        split_kind = self.kind - 1
         split_angle = random.uniform(20, 50)
         v1 = self.velocity.rotate(split_angle) * 1.2
         v2 = self.velocity.rotate(-split_angle) * 1.2
-        radius = self.radius - ASTEROID_MIN_RADIUS
-        a1 = Asteroid(self.position, radius)
-        a2 = Asteroid(self.position, radius)
+        radius = ASTEROID_MIN_RADIUS * split_kind
+        a1 = Asteroid(self.position, radius, split_kind)
+        a2 = Asteroid(self.position, radius, split_kind)
         a1.velocity = v1
         a2.velocity = v2
 
@@ -55,34 +58,26 @@ class Asteroid(CircleShape):
         The asteroid will be spawned randomly at one of the 4 screen edges, and
         have a velocity away from it. The asteroid will be added to all `*groups`
         """
+        kind = random.randint(1, ASTEROID_KINDS)
+        radius = ASTEROID_MIN_RADIUS * kind
+        half_r = radius / 2
         position_mod = random.uniform(0, 1)
         speed = random.randint(40, 100)
         rotation = random.randint(-30, 30)
         edge = random.choice(("top", "bottom", "left", "right"))
         match edge:
             case "top":
-                velocity = pygame.Vector2(0, 1).rotate(rotation) * speed
-                position = pygame.Vector2(
-                    SCREEN_WIDTH * position_mod, ASTEROID_MAX_RADIUS
-                )
+                velocity = Vector2(0, 1).rotate(rotation) * speed
+                position = Vector2(SCREEN_WIDTH * position_mod, half_r)
             case "bottom":
-                velocity = pygame.Vector2(0, -1).rotate(rotation) * speed
-                position = pygame.Vector2(
-                    SCREEN_WIDTH * position_mod, SCREEN_HEIGHT - ASTEROID_MAX_RADIUS
-                )
+                velocity = Vector2(0, -1).rotate(rotation) * speed
+                position = Vector2(SCREEN_WIDTH * position_mod, SCREEN_HEIGHT - half_r)
             case "left":
-                velocity = pygame.Vector2(1, 0).rotate(rotation) * speed
-                position = pygame.Vector2(
-                    ASTEROID_MAX_RADIUS, SCREEN_HEIGHT * position_mod
-                )
+                velocity = Vector2(1, 0).rotate(rotation) * speed
+                position = Vector2(half_r, SCREEN_HEIGHT * position_mod)
             case "right":
-                velocity = pygame.Vector2(-1, 0).rotate(rotation) * speed
-                position = pygame.Vector2(
-                    SCREEN_WIDTH - ASTEROID_MAX_RADIUS, SCREEN_HEIGHT * position_mod
-                )
+                velocity = Vector2(-1, 0).rotate(rotation) * speed
+                position = Vector2(SCREEN_WIDTH - half_r, SCREEN_HEIGHT * position_mod)
 
-        asteroid = Asteroid(
-            position,
-            ASTEROID_MIN_RADIUS * random.randint(1, ASTEROID_KINDS),
-        )
+        asteroid = Asteroid(position, radius, kind)
         asteroid.velocity = velocity
