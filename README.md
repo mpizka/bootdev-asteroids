@@ -39,7 +39,8 @@ Changes planned or already implemented
 - [ ] Restart
 - [x] Sprites for asteroids and spaceship
 - [x] Spaceship exhaust while accelerating
-- [ ] Shot sprites
+- [x] Shot sprites
+- [x] EXPLOSIONS!
 
 
 [course]: https://www.boot.dev/courses/build-asteroids-python

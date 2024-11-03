@@ -1,11 +1,12 @@
 import pygame
 
+import assets
 from constants import *
 from player import Player
 from asteroid import Asteroid
 from shot import Shot
 from score import draw_scoreboard
-import assets
+from explosion import Explosion
 
 
 def main():
@@ -39,6 +40,7 @@ def main():
     Player.set_default_groups(drawable, updateable)
     Asteroid.set_default_groups(asteroids, updateable, drawable)
     Shot.set_default_groups(shots, updateable, drawable)
+    Explosion.set_default_groups(drawable, updateable)
 
     # asteroid spawn cooldown
     asteroid_cooldown = 0
@@ -112,6 +114,7 @@ def main():
             for s in shots:
                 if a.collides_with(s):
                     a.split()
+                    a.explode()
                     s.kill()
                     score += 1
                     break

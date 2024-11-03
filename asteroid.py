@@ -7,6 +7,7 @@ from pygame import Vector2
 from assets import ASSETS
 from circleshape import CircleShape
 from constants import *
+from explosion import Explosion
 
 
 class Asteroid(CircleShape):
@@ -49,6 +50,9 @@ class Asteroid(CircleShape):
         a2 = Asteroid(self.position, radius, split_kind)
         a1.velocity = v1
         a2.velocity = v2
+
+    def explode(self):
+        Explosion(self.position, self.radius)
 
     @classmethod
     def spawn(cls):
