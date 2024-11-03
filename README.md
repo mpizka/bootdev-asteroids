@@ -37,8 +37,8 @@ Changes planned or already implemented
 - [ ] Game-Over Screen
 - [x] Background image
 - [ ] Restart
-- [ ] Sprites for asteroids and spaceship
-- [ ] Spaceship exhaust while accelerating
+- [x] Sprites for asteroids and spaceship
+- [x] Spaceship exhaust while accelerating
 
 
 [course]: https://www.boot.dev/courses/build-asteroids-python

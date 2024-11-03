@@ -17,10 +17,12 @@ class Player(CircleShape):
 
         self.rotation = 0
         self.shot_cooldown = 0
+        self.engine_running = False
 
     def draw(self, screen: pygame.Surface):
         """Override the `CircleShape.draw` method to draw the spaceship"""
-        rot_img = pygame.transform.rotate(ASSETS["ship.png"], -self.rotation)
+        asset_name = "ship_exhaust.png" if self.engine_running else "ship.png"
+        rot_img = pygame.transform.rotate(ASSETS[asset_name], -self.rotation)
         rot_img_rect = rot_img.get_rect()
         x_offset = rot_img_rect.width / 2
         y_offset = rot_img_rect.height / 2
@@ -68,6 +70,7 @@ class Player(CircleShape):
         # decrease shot cooldown timer
         # if this is > 0, player cannot shoot
         self.shot_cooldown -= dt
+        self.engine_running = False
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
@@ -75,6 +78,7 @@ class Player(CircleShape):
         if keys[pygame.K_LEFT]:
             self.rotate(-dt)
         if keys[pygame.K_UP]:
+            self.engine_running = True
             self.accelerate(dt)
         if keys[pygame.K_SPACE]:
             self.shoot()
