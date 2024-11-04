@@ -36,6 +36,7 @@ Access the desired version by checking out `main` at the indicated tag.
 - `v1.1.0` Code and technical improvements
 - `v1.1.1` Gameplay improvements (score display and aceleration)
 - `v1.2.0` Graphics update
+- `v1.2.1` Level-Mode and Menus
 
 
 ## Roadmap
