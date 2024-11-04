@@ -3,13 +3,30 @@
 Asteroids game from the boot.dev course [*"Build Asteroids using Python and Pygame"*][course]
 
 - Run `python main.py` to play
+- In the main menu <kbd>L</kbd> starts Level, <kbd>E</kbd> starts Endless Mode
 - <kbd>Left</kbd> <kbd>Right</kbd> turn the ship
 - <kbd>Up</kbd> accelerates
 - <kbd>Space</kbd> shoots
 - <kbd>Q</kbd> or <kbd>Esc</kbd> exits the game
 - <kbd>P</kbd> Pauses and Unpauses the game
-- When an asteroid hits the ship, or the ship leaves the screen it's game over
-- <kbd>N</kbd> Starts a new game (From the game over screen)
+- After game over <kbd>M</kbd> gets you back to the menu
+
+
+### Endless Mode
+
+Asteroids spawn continuously from the edges of the screen. Try to survive as
+long as possible! If your ship flies into the void (leaves the screen) or an
+asteroid hits it, it's game over!
+
+
+### Level Mode
+
+You start at Level 1 and progress by destroying all the asteroids. For each
+level, 2 large asteroids will spawn at the edges of space. When an asteroid
+hits you, it's game over! How far can you go?  Both asteroids and your ship can
+go over the edge of the screen to reappear on the other side.
+
+When you finish a level, press <kbd>N</kbd> to progress to the next!
 
 
 ## Versions

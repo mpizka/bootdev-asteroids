@@ -2,11 +2,6 @@ import pygame
 
 import assets
 from constants import *
-from player import Player
-from asteroid import Asteroid
-from shot import Shot
-from score import draw_scoreboard
-from explosion import Explosion
 import state
 
 
@@ -29,7 +24,8 @@ def main():
     # cross-state value dictionary
     game_vals = {}
 
-    current_state = state.Endless(screen, game_vals)
+    # current_state = state.Endless(screen, game_vals)
+    current_state = state.Menu(screen, game_vals)
 
     # game loop
     while 1:

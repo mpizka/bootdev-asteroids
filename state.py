@@ -10,7 +10,7 @@ from assets import ASSETS
 from asteroid import Asteroid
 from constants import *
 from player import Player
-from score import draw_scoreboard
+import text
 from shot import Shot
 from explosion import Explosion
 
@@ -29,12 +29,11 @@ class Loop:
         raise NotImplementedError("Loops must implement `step()`")
 
 
-class GameOver(Loop):
-    """Game Over Screen, draws score"""
+class Menu(Loop):
+    """Display Game Menu"""
 
     def __init__(self, screen, storage):
         super().__init__(screen, storage)
-        self.gameover_font = pygame.font.Font(size=36)  # type: ignore
         self.score = storage.get("score", 0)
 
     def step(self, dt: float) -> Loop:
@@ -49,41 +48,61 @@ class GameOver(Loop):
                 pygame.K_ESCAPE,
             ]:
                 return Quit(self.screen, storage={})
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
-                return Endless(self.screen, self.storage)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
+                return Endless(self.screen, {})
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
+                return Level(self.screen, {}, level=1)
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
 
-        game_over_text = self.gameover_font.render(
-            "-- GAME OVER --",
-            False,
-            SCORE_COLOR,
+        # draw menu
+        text.draw_lines_mid(
+            self.screen,
+            lines=[
+                "-- A S T E R O I D S --",
+                "",
+                "[L] -> Level Mode",
+                "[E] -> Endless Mode",
+            ],
         )
-        w_got = game_over_text.get_width()
-        h_got = game_over_text.get_height()
-        self.screen.blit(
-            source=game_over_text,
-            dest=(
-                SCREEN_WIDTH / 2 - w_got / 2,
-                SCREEN_HEIGHT / 2 - h_got / 2,
-            ),
+        return self
+
+
+class GameOver(Loop):
+    """Game Over Screen, draws score"""
+
+    def __init__(self, screen, storage):
+        super().__init__(screen, storage)
+        self.score = storage.get("score", 0)
+
+    def step(self, dt: float) -> Loop:
+
+        for event in pygame.event.get():
+            # the `QUIT` event is emitted e.g. by pressing [X] in the window
+            if event.type == pygame.QUIT:
+                return Quit(self.screen, storage={})
+            # we quit the game if the user presses Q or ESC
+            if event.type == pygame.KEYDOWN and event.key in [
+                pygame.K_q,
+                pygame.K_ESCAPE,
+            ]:
+                return Quit(self.screen, storage={})
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                return Menu(self.screen, {})
+
+        # redraw background
+        self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
+
+        # draw text
+        text.draw_lines_mid(
+            self.screen,
+            lines=[
+                "-- GAME OVER --",
+                f"SCORE: {self.score}",
+            ],
         )
 
-        scoreboard = self.gameover_font.render(
-            f"SCORE: {self.score}",
-            False,
-            SCORE_COLOR,
-        )
-        w_sb = scoreboard.get_width()
-        h_sb = scoreboard.get_height()
-        self.screen.blit(
-            source=scoreboard,
-            dest=(
-                SCREEN_WIDTH / 2 - w_sb / 2,
-                SCREEN_HEIGHT / 2 - h_sb / 2 + h_got + 10,
-            ),
-        )
         return self
 
 
@@ -102,7 +121,6 @@ class Pause(Loop):
     def __init__(self, screen, storage, previous_state: Loop):
         super().__init__(screen, storage)
         self.previous_state = previous_state
-        self.pause_font = pygame.font.Font(size=36)  # type: ignore
 
     def step(self, dt: float) -> Loop:
         for event in pygame.event.get():
@@ -119,21 +137,148 @@ class Pause(Loop):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 return self.previous_state
 
-        # display -- PAUSE -- text
-        pause_text = self.pause_font.render(
-            "-- GAME PAUSED --",
-            False,
-            SCORE_COLOR,
-        )
-        w_got = pause_text.get_width()
-        h_got = pause_text.get_height()
-        self.screen.blit(
-            source=pause_text,
-            dest=(
-                SCREEN_WIDTH / 2 - w_got / 2,
-                SCREEN_HEIGHT / 2 - h_got / 2,
-            ),
-        )
+        # draw text
+        text.draw_lines_mid(self.screen, lines=["-- GAME PAUSED --"])
+
+        return self
+
+
+class LevelCleared(Loop):
+    """Level Clear Screen"""
+
+    def __init__(self, screen, storage: dict, level):
+        super().__init__(screen, storage)
+        self.level = level
+
+    def step(self, dt: float) -> Loop:
+        for event in pygame.event.get():
+            # the `QUIT` event is emitted e.g. by pressing [X] in the window
+            if event.type == pygame.QUIT:
+                return Quit(self.screen, storage={})
+            # we quit the game if the user presses Q or ESC
+            if event.type == pygame.KEYDOWN and event.key in [
+                pygame.K_q,
+                pygame.K_ESCAPE,
+            ]:
+                return Quit(self.screen, storage={})
+            # Unpause the game
+            # TODO: next level
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
+                return Level(self.screen, self.storage, self.level + 1)
+
+        # draw text
+        text.draw_lines_mid(self.screen, lines=[f"-- LEVEL {self.level} cleared --"])
+
+        return self
+
+
+class Level(Loop):
+    """Level Based Game
+
+    A set number of asteroids spawn at once. Objects going over the edge of the
+    screen re-appear on the other side (except for shots)"""
+
+    def __init__(self, screen, storage: dict, level):
+        super().__init__(screen, storage)
+
+        self.level = level
+
+        # setup groups
+        self.drawable = pygame.sprite.Group()
+        self.updateable = pygame.sprite.Group()
+        self.asteroids = pygame.sprite.Group()
+        self.shots = pygame.sprite.Group()
+
+        # Set default groups for classes
+        Player.set_default_groups(self.drawable, self.updateable)
+        Asteroid.set_default_groups(self.asteroids, self.updateable, self.drawable)
+        Shot.set_default_groups(self.shots, self.updateable, self.drawable)
+        Explosion.set_default_groups(self.drawable, self.updateable)
+
+        # spawn player
+        self.player = Player(pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
+
+        # spawn asteroids
+        for _ in range(self.level * 2):
+            Asteroid.spawn(size=ASTEROID_SIZES)
+
+        # score tracker
+        self.score = self.storage.get("score", 0)
+
+    def step(self, dt: float) -> Loop:
+        """A single step in this game loop"""
+
+        for event in pygame.event.get():
+            # the `QUIT` event is emitted e.g. by pressing [X] in the window
+            if event.type == pygame.QUIT:
+                return Quit(self.screen, storage={})
+            # we quit the game if the user presses Q or ESC
+            if event.type == pygame.KEYDOWN and event.key in [
+                pygame.K_q,
+                pygame.K_ESCAPE,
+            ]:
+                return Quit(self.screen, storage={})
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                return Pause(self.screen, self.storage, self)
+
+        # redraw background
+        self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
+
+        # run updates and remove out-of-screen objects
+        for u in self.updateable:
+
+            # shots don't wrap around
+            if isinstance(u, Shot) and (
+                u.position.x > SCREEN_WIDTH
+                or u.position.x < 0
+                or u.position.y > SCREEN_HEIGHT
+                or u.position.y < 0
+            ):
+                u.kill()
+                continue
+
+            if u.position.x - u.radius > SCREEN_WIDTH:
+                u.position.x = -u.radius
+
+            if u.position.x < -u.radius:
+                u.position.x = SCREEN_WIDTH + u.radius
+
+            if u.position.y - u.radius > SCREEN_HEIGHT:
+                u.position.y = -u.radius
+
+            if u.position.y < -u.radius:
+                u.position.y = SCREEN_HEIGHT + u.radius
+
+            u.update(dt)
+
+        # determine if asteroids hit player
+        for a in self.asteroids:
+            if a.collides_with(self.player):
+                self.storage["score"] = self.score
+                return GameOver(self.screen, storage=self.storage)
+
+        # determine if shots hit asteroids
+        for a in self.asteroids:
+            for s in self.shots:
+                if a.collides_with(s):
+                    s.kill()
+                    a.split()
+                    a.explode()
+                    self.score += 1
+                    break
+
+        # check if level complete
+        if len(self.asteroids) == 0:
+            self.storage["score"] = self.score
+            return LevelCleared(self.screen, storage=self.storage, level=self.level)
+
+        # draw sprites
+        for d in self.drawable:
+            d.draw(self.screen)
+
+        # draw scoreboard
+        text.draw_bottom_right(self.screen, f"SCORE: {self.score}")
+
         return self
 
 
@@ -161,7 +306,6 @@ class Endless(Loop):
         self.player = Player(pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
         # score tracker
-        self.score_font = pygame.font.Font(size=12)  # type: ignore
         self.score = 0
 
     def step(self, dt: float) -> Loop:
@@ -226,6 +370,6 @@ class Endless(Loop):
             d.draw(self.screen)
 
         # draw scoreboard
-        draw_scoreboard(self.score, self.screen)
+        text.draw_bottom_right(self.screen, f"SCORE: {self.score}")
 
         return self

@@ -59,13 +59,14 @@ class Asteroid(CircleShape):
         Explosion(self.position, self.radius)
 
     @classmethod
-    def spawn(cls):
+    def spawn(cls, size=None):
         """Spawn an asteroid
 
         The asteroid will be spawned randomly at one of the 4 screen edges, and
         have a velocity away from it. The asteroid will be added to all `*groups`
         """
-        size = random.randint(1, ASTEROID_SIZES)
+        if size is None:
+            size = random.randint(1, ASTEROID_SIZES)
         radius = ASTEROID_MIN_RADIUS * size
         half_r = radius / 2
         position_mod = random.uniform(0, 1)
