@@ -39,19 +39,15 @@ class Menu(Loop):
     def step(self, dt: float) -> Loop:
 
         for event in pygame.event.get():
-            # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
                 return Quit(self.screen, storage={})
-            # we quit the game if the user presses Q or ESC
-            if event.type == pygame.KEYDOWN and event.key in [
-                pygame.K_q,
-                pygame.K_ESCAPE,
-            ]:
-                return Quit(self.screen, storage={})
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
-                return Endless(self.screen, {})
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                return Level(self.screen, {}, level=1)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Quit(self.screen, storage={})
+                if event.key == pygame.K_e:
+                    return Endless(self.screen, {})
+                if event.key == pygame.K_l:
+                    return Level(self.screen, {}, level=1)
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
@@ -85,17 +81,11 @@ class GameOver(Loop):
     def step(self, dt: float) -> Loop:
 
         for event in pygame.event.get():
-            # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
                 return Quit(self.screen, storage={})
-            # we quit the game if the user presses Q or ESC
-            if event.type == pygame.KEYDOWN and event.key in [
-                pygame.K_q,
-                pygame.K_ESCAPE,
-            ]:
-                return Quit(self.screen, storage={})
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
-                return Menu(self.screen, {})
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Menu(self.screen, storage={})
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
@@ -129,19 +119,15 @@ class Pause(Loop):
         self.previous_state = previous_state
 
     def step(self, dt: float) -> Loop:
+
         for event in pygame.event.get():
-            # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
                 return Quit(self.screen, storage={})
-            # we quit the game if the user presses Q or ESC
-            if event.type == pygame.KEYDOWN and event.key in [
-                pygame.K_q,
-                pygame.K_ESCAPE,
-            ]:
-                return Quit(self.screen, storage={})
-            # Unpause the game
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                return self.previous_state
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Menu(self.screen, storage={})
+                if event.key == pygame.K_p:
+                    return self.previous_state
 
         # draw text
         text.draw_lines_mid(self.screen, lines=["-- GAME PAUSED --"])
@@ -157,23 +143,21 @@ class LevelCleared(Loop):
         self.level = level
 
     def step(self, dt: float) -> Loop:
+
         for event in pygame.event.get():
-            # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
                 return Quit(self.screen, storage={})
-            # we quit the game if the user presses Q or ESC
-            if event.type == pygame.KEYDOWN and event.key in [
-                pygame.K_q,
-                pygame.K_ESCAPE,
-            ]:
-                return Quit(self.screen, storage={})
-            # Unpause the game
-            # TODO: next level
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
-                return Level(self.screen, self.storage, self.level + 1)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Menu(self.screen, storage={})
+                if event.key == pygame.K_n:
+                    return Level(self.screen, self.storage, self.level + 1)
 
         # draw text
-        text.draw_lines_mid(self.screen, lines=[f"-- LEVEL {self.level} cleared --"])
+        text.draw_lines_mid(
+            self.screen,
+            lines=[f"-- LEVEL {self.level} cleared --", "Press N to continue"],
+        )
 
         return self
 
@@ -215,17 +199,13 @@ class Level(Loop):
         """A single step in this game loop"""
 
         for event in pygame.event.get():
-            # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
                 return Quit(self.screen, storage={})
-            # we quit the game if the user presses Q or ESC
-            if event.type == pygame.KEYDOWN and event.key in [
-                pygame.K_q,
-                pygame.K_ESCAPE,
-            ]:
-                return Quit(self.screen, storage={})
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                return Pause(self.screen, self.storage, self)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Menu(self.screen, storage={})
+                if event.key == pygame.K_p:
+                    return Pause(self.screen, self.storage, self)
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
@@ -318,17 +298,13 @@ class Endless(Loop):
         """A single step in this game loop"""
 
         for event in pygame.event.get():
-            # the `QUIT` event is emitted e.g. by pressing [X] in the window
             if event.type == pygame.QUIT:
                 return Quit(self.screen, storage={})
-            # we quit the game if the user presses Q or ESC
-            if event.type == pygame.KEYDOWN and event.key in [
-                pygame.K_q,
-                pygame.K_ESCAPE,
-            ]:
-                return Quit(self.screen, storage={})
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
-                return Pause(self.screen, self.storage, self)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Menu(self.screen, storage={})
+                if event.key == pygame.K_p:
+                    return Pause(self.screen, self.storage, self)
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))

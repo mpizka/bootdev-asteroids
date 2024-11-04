@@ -3,13 +3,12 @@
 Asteroids game from the boot.dev course [*"Build Asteroids using Python and Pygame"*][course]
 
 - Run `python main.py` to play
-- In the main menu <kbd>L</kbd> starts Level, <kbd>E</kbd> starts Endless Mode
+- Chose a game-mode from the main menu
 - <kbd>Left</kbd> <kbd>Right</kbd> turn the ship
 - <kbd>Up</kbd> accelerates
 - <kbd>Space</kbd> shoots
-- <kbd>Q</kbd> or <kbd>Esc</kbd> exits the game
-- <kbd>P</kbd> Pauses and Unpauses the game
-- After game over <kbd>M</kbd> gets you back to the menu
+- <kbd>Q</kbd> exits the game or goes back to the main menu
+- <kbd>P</kbd> pauses/unpauses the game
 
 
 ### Endless Mode
