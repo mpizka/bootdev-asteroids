@@ -56,15 +56,21 @@ class Menu(Loop):
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
 
+        # draw title logo
+        logo = ASSETS["logo_400.png"]
+        x = SCREEN_WIDTH / 2 - logo.get_width() / 2
+        y = SCREEN_HEIGHT / 4 - logo.get_height() / 2 + 20
+        self.screen.blit(logo, (x, y))
+
         # draw menu
         text.draw_lines_mid(
             self.screen,
             lines=[
-                "-- A S T E R O I D S --",
-                "",
-                "[L] -> Level Mode",
-                "[E] -> Endless Mode",
+                "-GAME MODE-",
+                "E: Endless",
+                "L: Level  ",
             ],
+            y_start=SCREEN_HEIGHT / 5 * 3,
         )
         return self
 
