@@ -4,6 +4,7 @@ from assets import ASSETS
 from circleshape import CircleShape
 from shot import Shot
 from constants import *
+from explosion import Explosion
 
 
 class Player(CircleShape):
@@ -114,3 +115,6 @@ class Player(CircleShape):
         shot = Shot(self.position + forward * self.radius)
         shot.velocity = forward * SHOT_SPEED
         self.shot_cooldown = SHOT_COOLDOWN
+
+    def explode(self):
+        Explosion(self.position, self.radius * 1.5)

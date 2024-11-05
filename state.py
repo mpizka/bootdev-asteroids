@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from itertools import chain
+
 import pygame
 from pygame import Surface
 from pygame.sprite import Group
@@ -72,11 +74,15 @@ class Menu(Loop):
 
 
 class GameOver(Loop):
-    """Game Over Screen, draws score"""
+    """Game Over Screen, draws score
 
-    def __init__(self, screen, storage):
+    Will call `update(dt)` and `draw(screen)` on all entities in `groups`
+    to allow for 'background animations'."""
+
+    def __init__(self, screen, storage, groups: list[pygame.sprite.Group]):
         super().__init__(screen, storage)
         self.score = storage.get("score", 0)
+        self.groups = groups
 
     def step(self, dt: float) -> Loop:
 
@@ -89,6 +95,12 @@ class GameOver(Loop):
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
+
+        # draw groups
+        for entity in chain(*self.groups):
+            entity.update(dt)
+        for entity in chain(*self.groups):
+            entity.draw(self.screen)
 
         # draw text
         text.draw_lines_mid(
@@ -241,7 +253,14 @@ class Level(Loop):
         for a in self.asteroids:
             if a.collides_with(self.player):
                 self.storage["score"] = self.score
-                return GameOver(self.screen, storage=self.storage)
+                self.player.kill()
+                self.player.explode()
+                a.kill()
+                a.split()
+                a.explode()
+                return GameOver(
+                    self.screen, storage=self.storage, groups=[self.updateable]
+                )
 
         # determine if shots hit asteroids
         for a in self.asteroids:
@@ -318,15 +337,18 @@ class Endless(Loop):
         # run updates and remove out-of-screen objects
         for u in self.updateable:
             if (
-                u.position.x > SCREEN_WIDTH
-                or u.position.x < 0
-                or u.position.y > SCREEN_HEIGHT
-                or u.position.y < 0
+                u.position.x - u.radius > SCREEN_WIDTH
+                or u.position.x < -u.radius
+                or u.position.y - u.radius > SCREEN_HEIGHT
+                or u.position.y < -u.radius
             ):
                 # detect ship crashing into the void
                 if u is self.player:
                     self.storage["score"] = self.score
-                    return GameOver(self.screen, storage=self.storage)
+                    self.player.kill()
+                    return GameOver(
+                        self.screen, storage=self.storage, groups=[self.updateable]
+                    )
                 u.kill()
                 continue
             u.update(dt)
@@ -335,7 +357,14 @@ class Endless(Loop):
         for a in self.asteroids:
             if a.collides_with(self.player):
                 self.storage["score"] = self.score
-                return GameOver(self.screen, storage=self.storage)
+                self.player.kill()
+                self.player.explode()
+                a.kill()
+                a.split()
+                a.explode()
+                return GameOver(
+                    self.screen, storage=self.storage, groups=[self.updateable]
+                )
 
         # determine if shots hit asteroids
         for a in self.asteroids:

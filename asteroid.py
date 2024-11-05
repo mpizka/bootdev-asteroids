@@ -76,16 +76,16 @@ class Asteroid(CircleShape):
         match edge:
             case "top":
                 velocity = Vector2(0, 1).rotate(rotation) * speed
-                position = Vector2(SCREEN_WIDTH * position_mod, half_r)
+                position = Vector2(SCREEN_WIDTH * position_mod, -half_r)
             case "bottom":
                 velocity = Vector2(0, -1).rotate(rotation) * speed
-                position = Vector2(SCREEN_WIDTH * position_mod, SCREEN_HEIGHT - half_r)
+                position = Vector2(SCREEN_WIDTH * position_mod, SCREEN_HEIGHT + half_r)
             case "left":
                 velocity = Vector2(1, 0).rotate(rotation) * speed
-                position = Vector2(half_r, SCREEN_HEIGHT * position_mod)
+                position = Vector2(-half_r, SCREEN_HEIGHT * position_mod)
             case "right":
                 velocity = Vector2(-1, 0).rotate(rotation) * speed
-                position = Vector2(SCREEN_WIDTH - half_r, SCREEN_HEIGHT * position_mod)
+                position = Vector2(SCREEN_WIDTH + half_r, SCREEN_HEIGHT * position_mod)
 
         asteroid = Asteroid(position, radius, size)
         asteroid.velocity = velocity
