@@ -150,9 +150,16 @@ class Pause(Loop):
 class LevelCleared(Loop):
     """Level Clear Screen"""
 
-    def __init__(self, screen, storage: dict, level):
+    def __init__(
+        self,
+        screen,
+        storage: dict,
+        level: int,
+        groups: list[pygame.sprite.Group],
+    ):
         super().__init__(screen, storage)
         self.level = level
+        self.groups = groups
 
     def step(self, dt: float) -> Loop:
 
@@ -164,6 +171,15 @@ class LevelCleared(Loop):
                     return Menu(self.screen, storage={})
                 if event.key == pygame.K_n:
                     return Level(self.screen, self.storage, self.level + 1)
+
+        # redraw background
+        self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
+
+        # draw groups
+        for entity in chain(*self.groups):
+            entity.update(dt)
+        for entity in chain(*self.groups):
+            entity.draw(self.screen)
 
         # draw text
         text.draw_lines_mid(
@@ -275,7 +291,12 @@ class Level(Loop):
         # check if level complete
         if len(self.asteroids) == 0:
             self.storage["score"] = self.score
-            return LevelCleared(self.screen, storage=self.storage, level=self.level)
+            return LevelCleared(
+                self.screen,
+                storage=self.storage,
+                level=self.level,
+                groups=[self.updateable],
+            )
 
         # draw sprites
         for d in self.drawable:
