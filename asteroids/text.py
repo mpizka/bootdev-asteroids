@@ -2,13 +2,19 @@ import pygame
 from pygame import Surface
 from pygame.font import Font, SysFont
 
+from assets import FONT_ASSETS
 from constants import *
 
 
 def draw_bottom_right(screen: Surface, line: str):
     """Draw a line to the bottom right"""
-    score_font = Font(size=SCORE_SIZE)  # type: ignore
-    scoreboard = score_font.render(line, False, SCORE_COLOR)
+    font = FONT_ASSETS["monogram.ttf"]
+
+    scoreboard, _ = font.render(
+        line,
+        fgcolor=SCORE_COLOR,
+        size=SCORE_SIZE,
+    )
     screen.blit(
         source=scoreboard,
         dest=(
@@ -23,10 +29,10 @@ def draw_lines_mid(screen: Surface, lines: list[str], y_start=None):
 
     If y_start is set, it becomes the vertical starting point instead.
     """
-    mid_font = SysFont(name="mono", size=MENU_SIZE)
+    font = FONT_ASSETS["monogram.ttf"]
 
     # height of a line
-    h = mid_font.get_height()
+    h = font.get_sized_height(MENU_SIZE)
     # total height of text
     total_h = h * len(lines) + MENU_SPACING * (len(lines) - 1)
 
@@ -34,7 +40,7 @@ def draw_lines_mid(screen: Surface, lines: list[str], y_start=None):
         y_start = SCREEN_HEIGHT / 2 - total_h / 2
     y_offset = 0
     for l in lines:
-        text = mid_font.render(l, False, MENU_COLOR)
+        text, _ = font.render(l, fgcolor=MENU_COLOR, size=MENU_SIZE)
         w = text.get_width()
         dest = (SCREEN_WIDTH / 2 - w / 2, y_start + y_offset)
         screen.blit(text, dest)
