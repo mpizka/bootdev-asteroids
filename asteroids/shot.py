@@ -8,6 +8,7 @@ from constants import *
 
 
 class Shot(CircleShape):
+    """Projectiles for the normal PLasma Cannon"""
 
     def __init__(self, position):
         super().__init__(position, radius=SHOT_RADIUS)
@@ -25,5 +26,26 @@ class Shot(CircleShape):
             self.debug_draw_hitbox(screen)
 
     def update(self, dt: float):
-        """Asteroids move by their velicity (which is a Vector2) at each frame"""
+        self.position += self.velocity * dt
+
+
+class Mjolnir(CircleShape):
+    """Projectiles for the Mjolnir Cannon"""
+
+    def __init__(self, position):
+        super().__init__(position, radius=MJOLNIR_RADIUS)
+        self.kind = random.randint(1, MJOLNIR_KINDS)
+
+    def draw(self, screen: pygame.Surface):
+        """Shots are just drawn as circles"""
+        img = ASSETS[f"mjolnir_{self.kind}.png"]
+        offset = img.get_rect().height / 2
+        x = self.position.x - offset
+        y = self.position.y - offset
+        screen.blit(img, (x, y))
+
+        if DEBUG_SHOW_HITBOX:
+            self.debug_draw_hitbox(screen)
+
+    def update(self, dt: float):
         self.position += self.velocity * dt

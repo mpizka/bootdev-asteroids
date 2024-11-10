@@ -12,8 +12,9 @@ from assets import ASSETS
 from asteroid import Asteroid
 from constants import *
 from player import Player
+from taurus import Taurus
 import text
-from shot import Shot
+from shot import Mjolnir, Shot
 from explosion import Explosion
 
 
@@ -50,6 +51,8 @@ class Menu(Loop):
                     return Endless(self.screen, {})
                 if event.key == pygame.K_l:
                     return Level(self.screen, {}, level=1)
+                if event.key == pygame.K_t:
+                    return EndlessTaurus(self.screen, {})
 
         # redraw background
         self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
@@ -67,6 +70,7 @@ class Menu(Loop):
                 "-GAME MODE-",
                 "E: Endless",
                 "L: Level  ",
+                "T: Taurus ",
             ],
             y_start=SCREEN_HEIGHT / 5 * 3,
         )
@@ -392,6 +396,108 @@ class Endless(Loop):
             for s in self.shots:
                 if a.collides_with(s):
                     s.kill()
+                    a.split()
+                    a.explode()
+                    self.score += 1
+                    break
+
+        # draw sprites
+        for d in self.drawable:
+            d.draw(self.screen)
+
+        # draw scoreboard
+        text.draw_bottom_right(self.screen, f"SCORE: {self.score}")
+
+        return self
+
+
+class EndlessTaurus(Loop):
+    """Endless game but using the Taurus mobile defense platform"""
+
+    def __init__(self, screen, storage: dict):
+        super().__init__(screen, storage)
+
+        # setup groups
+        self.drawable = pygame.sprite.Group()
+        self.updateable = pygame.sprite.Group()
+        self.asteroids = pygame.sprite.Group()
+        self.shots = pygame.sprite.Group()
+
+        # Set default groups for classes
+        Taurus.set_default_groups(self.drawable, self.updateable)
+        Asteroid.set_default_groups(self.asteroids, self.updateable, self.drawable)
+        Shot.set_default_groups(self.shots, self.updateable, self.drawable)
+        Mjolnir.set_default_groups(self.shots, self.updateable, self.drawable)
+        Explosion.set_default_groups(self.drawable, self.updateable)
+
+        self.asteroid_cooldown = 0
+
+        # instanciate player
+        self.player = Taurus(pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
+
+        # score tracker
+        self.score = 0
+
+    def step(self, dt: float) -> Loop:
+        """A single step in this game loop"""
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return Quit(self.screen, storage={})
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return Menu(self.screen, storage={})
+                if event.key == pygame.K_p:
+                    return Pause(self.screen, self.storage, self)
+
+        # redraw background
+        self.screen.blit(ASSETS["bkgrd.jpg"], (0, 0))
+
+        # spawn asteroids
+        self.asteroid_cooldown -= dt
+        if self.asteroid_cooldown <= 0:
+            Asteroid.spawn()
+            self.asteroid_cooldown = ASTEROID_SPAWN_COOLDOWN
+
+        # run updates and remove out-of-screen objects
+        for u in self.updateable:
+            if (
+                u.position.x - u.radius > SCREEN_WIDTH
+                or u.position.x < -u.radius
+                or u.position.y - u.radius > SCREEN_HEIGHT
+                or u.position.y < -u.radius
+            ):
+                # detect ship crashing into the void
+                if u is self.player:
+                    self.storage["score"] = self.score
+                    self.player.kill()
+                    return GameOver(
+                        self.screen, storage=self.storage, groups=[self.updateable]
+                    )
+                u.kill()
+                continue
+            u.update(dt)
+
+        # determine if asteroids hit player
+        for a in self.asteroids:
+            if a.collides_with(self.player):
+                self.storage["score"] = self.score
+                self.player.kill()
+                self.player.explode()
+                a.kill()
+                a.split()
+                a.explode()
+                return GameOver(
+                    self.screen, storage=self.storage, groups=[self.updateable]
+                )
+
+        # determine if shots hit asteroids
+        for a in self.asteroids:
+            for s in self.shots:
+                if a.collides_with(s):
+                    # Mjolnir shots pass through asteroids
+                    if not isinstance(s, Mjolnir):
+                        s.kill()
                     a.split()
                     a.explode()
                     self.score += 1
